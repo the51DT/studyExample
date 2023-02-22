@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Three.js</title>
+</head>
+
+<body>
+  <div id="three"></div>
+
+  <script src="./js/Three.min.js"></script>
+  <script src="./js/OrbitControls.js"></script>
+  <script>
+    console.log('연결확인');
+    const {
+      WebGLRenderer,
+      PerspectiveCamera,
+      Scene,
+      PointLight,
+      MeshLambertMaterial,
+      Mesh,
+      OctahedronGeometry
+    } = THREE
+
+    function render() {
+      const scene = new Scene()
+
+      const renderer = new WebGLRenderer({
+        alpha: true,
+        antialias: true
+      })
+
+      const RADIUS = 40
+      const geometry = new OctahedronGeometry(RADIUS, 0);
+      const material = new MeshLambertMaterial({
+        color: 0xFF3030
+      })
+
+      const mesh = new Mesh(geometry, material)
+
+      scene.add(mesh)
+      mesh.position.z = -RADIUS * 10
+
+      const WIDTH = 400
+      const HEIGHT = WIDTH
+
+      const Field_of_View = 20
+      const ASPECT = WIDTH / HEIGHT
+      const NEAR = 0.1
+      const FAR = 10000
+
+      const camera = new PerspectiveCamera(
+        Field_of_View,
+        ASPECT,
+        NEAR,
+        FAR
+      )
+
+      renderer.setSize(WIDTH, HEIGHT)
+
+      const container = document.querySelector('#three')
+      container.appendChild(renderer.domElement)
+
+      const pointLight = new PointLight(0xFFFFFF, 0.5)
+
+      pointLight.position.x = 100
+      pointLight.position.y = 100
+      pointLight.position.z = 30
+
+      scene.add(pointLight)
+      scene.add(camera)
+
+      function update () {
+        const speed = Math.random() / 20
+        mesh.rotation.x += speed
+        mesh.rotation.y += speed
+        mesh.rotation.z += speed
+
+        renderer.render(scene, camera)
+        requestAnimationFrame(update)
+      }
+
+      requestAnimationFrame(update)
+    }
+    render()
+  </script>
+</body>
+
+</html>
